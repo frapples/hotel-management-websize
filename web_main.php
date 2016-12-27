@@ -3,22 +3,23 @@
 error_reporting(E_ALL);
 
 define("ROOT_DIR", __DIR__);
+include("utils/path.php");
 
+// 类自动加载机制的定义
 spl_autoload_register(function ($class) {
     $class = strtolower($class);
 
-    $path = path_join(ROOT_DIR, $class . ".php");
-    if (file_exists($path)) {
-        include($path);
-        return;
-    }
+    $maybe_paths = array(Path::join(ROOT_DIR, $class . ".php"),
+                  Path::join(ROOT_DIR, "model", $class . ".php"),
+                  Path::join(ROOT_DIR, "controller", $class . ".php"));
 
-    $path = path_join(ROOT_DIR, "model", $class . ".php");
-    if (file_exists($path)) {
-        include($path);
-        return;
+    foreach($maybe_paths as $path) {
+        if (file_exists($path)) {
+            include($path);
+            return;
+        }
     }
-        echo "错误，文件不存在" . $path . '\n';
+    echo "错误，尝试在以下路径寻找文件失败" . print_r($maybe_paths, true) . '\n';
 });
 
 // 网站的入口
@@ -30,22 +31,17 @@ function web_main()
 
     /* 切分请求 */
     $querys = explode("/", $_SERVER["REQUEST_URI"]);
-    $querys = array_filter($querys, function ($item) {
+    $querys = array_values(array_filter($querys, function ($item) {
         return $item != "";
-    });
+    }));
 
-    print_r($querys);
-}
-
-function path_join()
-{
-    $s = "";
-    foreach(func_get_args() as $name) {
-        if (strlen($s) > 0 && $s[strlen($s) - 1] != '/' &&
-            strlen($name) > 0 && $name[0] != '/') {
-            $s .= '/';
-        }
-        $s .= $name;
+    if (count($querys) <= 0) {
+        $controll_name = "index";
+    } else {
+        $controll_name = $querys[0];
     }
-    return $s;
+
+
+    Controller::dispath($controll_name);
 }
+
