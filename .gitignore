@@ -1,1 +1,7 @@
 asset/*
+
+# tag文件
+GPATH
+GTAGS
+GRTAGS
+GSYMS

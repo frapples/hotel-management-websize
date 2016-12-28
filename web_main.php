@@ -30,10 +30,16 @@ function web_main()
 
 
     /* 切分请求 */
-    $querys = explode("/", $_SERVER["REQUEST_URI"]);
-    $querys = array_values(array_filter($querys, function ($item) {
+    $querys = explode("/", parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH));
+    $querys = array_filter($querys, function ($item) {
         return $item != "";
-    }));
+    });
+
+    $querys = array_map(function ($item) {
+        return explode(".", $item)[0];
+    }, $querys);
+
+    $querys = array_values($querys);
 
     if (count($querys) <= 0) {
         $controll_name = "index";
@@ -42,6 +48,6 @@ function web_main()
     }
 
 
-    Controller::dispath($controll_name);
+    Controller::dispath($controll_name, array_slice($querys, 1));
 }
 

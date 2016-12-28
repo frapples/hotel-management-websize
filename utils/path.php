@@ -28,13 +28,20 @@ class Path {
             $s .= $name;
         }
 
-        if (is_string($get)) {
-            $s .= '?' . $get;
-        } else if (is_array($get)) {
-            $s .= '?' . http_build_query($get);
+        $s .= ".html";
+
+        assert(!is_string($get));
+
+        $query_str = http_build_query($get);
+        if ($query_str != '') {
+            $s .= '?' . $query_str;
         }
 
-        $s .= ".html";
         return $s;
+    }
+
+    static public function locate($path)
+    {
+        header("Location: {$path}");
     }
 }

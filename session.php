@@ -10,7 +10,7 @@ class Session {
 
     static public function set($key, $value)
     {
-        $_SESSION[$key] = $vaule;
+        $_SESSION[$key] = $value;
     }
 
     static public function get($key, $default)
@@ -20,5 +20,10 @@ class Session {
         }else {
             return $default;
         }
+    }
+
+    static public function clear()
+    {
+        session_destroy();
     }
 }
