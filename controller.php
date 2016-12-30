@@ -31,7 +31,8 @@ class Controller {
             Path::locate(Path::url(array(), "user_login"));
         } else {
             $api = array(
-                "user_info" => UserModel::user(Session::get('id_card', ''))
+                "user_info" => UserModel::user(Session::get('id_card', '')),
+                "order_records" => RoomModel::records(Session::get('id_card', '')),
             );
             Tpl::load("user_space", $api);
         }
@@ -39,7 +40,10 @@ class Controller {
 
     static public function test()
     {
-        UserModel::user("678432578052507538");
+        if ($_POST["pwd"] == "12345678") {
+            Database::instance();
+            // UserModel::user("678432578052507538");
+        }
     }
 
 }
@@ -88,5 +92,20 @@ class ApiController {
                 "reason" => "user_existed"
             );
         }
+
+        $success = UserModel::add_user($_POST['username'], $_POST['password'], $_POST['id_card'], $_POST['age'],
+                                       $_POST['sex'] == "male" ? "男" : "女",
+                                       $_POST['telephone']);
+
+
+        if ($success) {
+            Session::set('is_login', true);
+            Session::set('username', $_POST['username']);
+            Session::set('id_card', $_POST['id_card']);
+        }
+        return array(
+            "success" => $success,
+            "reason" => ""
+        );
     }
 }

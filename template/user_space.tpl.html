@@ -38,21 +38,31 @@
                      onFailure: function(response) {
                      }
                  });
+
+             $(".button.div-all-order-records").on('click', function() {
+                 $(".menu .item").tab('change tab', 'third');
+             });
          });
+
 
         </script>
     </head>
-
     <body>
+
+
         <div class="ui secondary pointing menu">
+            <a href="<?= Path::url(array(), 'hotel_home') ?>" class="item">
+                <i class="big home icon"> </i>
+                旅馆主页
+            </a>
             <a class="active item" data-tab="first">
-                <i class="home icon"></i> 个人资料
+                <i class="user icon"></i> 个人资料
             </a>
             <a class="item" data-tab="second">
-                <i class="mail icon"></i> 我的信息
+                <i class="mail icon"></i> 我的消息
             </a>
             <a class="item" data-tab="third">
-                <i class="user icon"></i> 所有订单
+                <i class="Payment icon"></i> 所有订单
             </a>
             <div class="right menu">
                 <div class="item">
@@ -95,28 +105,78 @@
                             </div>
                         </div>
                         <div class="extra content">
-                            <a>
-                                <i class="user icon"></i>
-                                已预定0个房间
+                            <a class ="button div-all-order-records">
+                                <i class="history icon"></i>
+                                共有<?= count(Tpl::api('order_records')) ?>笔消费记录
                             </a>
                         </div>
                     </div>
 
                 </div>
 
-                <div class="column"></div>
+                <div class="column">
+
+                    <h3 class="ui top attached header">
+                        <i class ="calendar icon"> </i>
+                        最近预约
+                    </h3>
+                    <div class="ui attached segment">
+
+                        <div class="ui relaxed divided items">
+
+                            <?php foreach(array_slice(Tpl::api('order_records'), 0, 3) as $record): ?>
+                            <div class="item">
+                                <div class="ui small image">
+                                    <img src="<?= Tpl::asset('room/1.png') ?>">
+                                </div>
+                                <div class="content">
+                                    <a class="header"> <?= $record['room_type_name'] . ' - ' . $record['cost_type'] ?> </a>
+                                    <div class="description">
+                                        预定时间：<?= $record['order_time'] ?>
+                                    </div>
+                                    <div class="extra">
+                                        <i class ="circular inverted teal small Yen icon"></i>
+                                        11
+                                    </div>
+                                </div>
+                            </div>
+                            <?php endforeach; ?>
+
+                        </div>
+                    </div>
+
+                </div>
 
                 <div class="column">
                     <div class="ui vertical menu">
                         <div class="header item">
-                            促销
-                            <span class="ui teal label">新</span>
+                           特价
+                            <span class="ui teal label">热</span>
                         </div>
                         <div class="text item">
                             <a>现在参与</a> 能有100元优惠！
                         </div>
                         <div class="item">
                             <p><a>明天参与</a> 能有50元优惠。</p>
+                        </div>
+                        <div class="item">
+                            <p><a>特价钟点房</a> 最低6折起！</p>
+                        </div>
+                    </div>
+
+                    <div class="ui vertical menu">
+                        <div class="header item">
+                            新品
+                            <span class="ui red label">新</span>
+                        </div>
+                        <div class="text item">
+                            <a>舒适情侣套间</a> 今日开售啦！
+                        </div>
+                        <div class="item">
+                            <p>最新<a>总统套间</a>，舒适的享受</p>
+                        </div>
+                        <div class="item">
+                            <p><a>单人小间</a>，实惠的选择！</p>
                         </div>
                     </div>
                 </div>
@@ -128,6 +188,36 @@
         </div>
 
         <div class="ui bottom attached tab segment" data-tab="third">
+
+                    <h3 class="ui top attached header">
+                        <i class ="calendar icon"> </i>
+                        我的所有订单
+                    </h3>
+                    <div class="ui attached segment">
+
+                        <div class="ui relaxed divided items">
+
+                            <?php foreach(Tpl::api('order_records') as $record): ?>
+                            <div class="item">
+                                <div class="ui small image">
+                                    <img src="<?= Tpl::asset('room/1.png') ?>">
+                                </div>
+                                <div class="content">
+                                    <a class="header"> <?= $record['room_type_name'] . ' - ' . $record['cost_type'] ?> </a>
+                                    <div class="description">
+                                        预定时间：<?= $record['order_time'] ?>
+                                    </div>
+                                    <div class="extra">
+                                        <i class ="circular inverted teal small Yen icon"></i>
+                                        11
+                                    </div>
+                                </div>
+                            </div>
+                            <?php endforeach; ?>
+
+                        </div>
+                    </div>
+
         </div>
     </body>
 

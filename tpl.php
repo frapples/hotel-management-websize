@@ -5,7 +5,7 @@ class Tpl {
 
     static public function load($name, $api_var)
     {
-        $path = Path::join(ROOT_DIR, "template", $name . ".html");
+        $path = Path::join(ROOT_DIR, "template", $name . ".tpl.html");
         if (!file_exists($path)) {
             throw new TplNotFoundException;
         }

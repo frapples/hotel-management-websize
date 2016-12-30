@@ -21,3 +21,52 @@ insert into Lodger values('123412128052507535','王娜',21,'女','8DDCFF3A80F418
 insert into Lodger values('192641782238207538','欧阳一丹',23,'女','8DDCFF3A80F4189CA1C9D4D902C3C909','18679740769',700,3,'2014-6-16');
 insert into Lodger values('852372738274623530','李美琪',35,'女','8DDCFF3A80F4189CA1C9D4D902C3C909','18875628324',1000,4,'2013-2-18');
 insert into Lodger values('235434248052507533','孙一海',46,'男','8DDCFF3A80F4189CA1C9D4D902C3C909','13276588763',500,3,'2014-1-1');
+
+
+INSERT INTO RoomType(Typename,Clockprice,Dayprice,Area,Capacity) VALUES('单人房',15,90,60,1);
+INSERT INTO RoomType(Typename,Clockprice,Dayprice,Area,Capacity) VALUES('双人房',20,120,80,2);
+INSERT INTO RoomType(Typename,Clockprice,Dayprice,Area,Capacity) VALUES('标准房',30,140,100,4);
+INSERT INTO RoomType(Typename,Clockprice,Dayprice,Area,Capacity) VALUES('情侣房',40,180,90,2);
+INSERT INTO RoomType(Typename,Clockprice,Dayprice,Area,Capacity) VALUES('豪华套房',50,300,170,7);
+INSERT INTO RoomType(Typename,Clockprice,Dayprice,Area,Capacity) VALUES('总统套房',80,500,220,10);
+
+INSERT INTO Room(Roomno,Typeno,Roomfloor,Pricepercent) VALUES('101',1,1,1);
+INSERT INTO Room(Roomno,Typeno,Roomfloor,Pricepercent) VALUES('102',1,1,1);
+INSERT INTO Room(Roomno,Typeno,Roomfloor,Pricepercent) VALUES('103',1,1,1);
+INSERT INTO Room(Roomno,Typeno,Roomfloor,Pricepercent) VALUES('104',1,1,0.95);
+INSERT INTO Room(Roomno,Typeno,Roomfloor,Pricepercent) VALUES('105',1,1,1);
+INSERT INTO Room(Roomno,Typeno,Roomfloor,Pricepercent) VALUES('106',2,1,1);
+INSERT INTO Room(Roomno,Typeno,Roomfloor,Pricepercent) VALUES('107',2,1,1);
+INSERT INTO Room(Roomno,Typeno,Roomfloor,Pricepercent) VALUES('108',3,1,0.95);
+INSERT INTO Room(Roomno,Typeno,Roomfloor,Pricepercent) VALUES('109',3,1,1);
+INSERT INTO Room(Roomno,Typeno,Roomfloor,Pricepercent) VALUES('110',3,1,1);
+INSERT INTO Room(Roomno,Typeno,Roomfloor,Pricepercent) VALUES('201',4,2,0.8);
+INSERT INTO Room(Roomno,Typeno,Roomfloor,Pricepercent) VALUES('302',5,3,1);
+INSERT INTO Room(Roomno,Typeno,Roomfloor,Pricepercent) VALUES('403',6,4,1);
+
+
+INSERT INTO Reservation(Roomno,LidCard,Ordertime,Maybeintime,Maybeouttime,Realouttime,Ordertype,Cashpledge)
+VALUES('101','678432578052507538','2015-07-01 10:20:00','2015-07-01 10:20:00','2015-07-01 10:20:00',null,0,100);
+INSERT INTO Reservation(Roomno,LidCard,Ordertime,Maybeintime,Maybeouttime,Realouttime,Ordertype,Cashpledge)
+VALUES('102','678432507350687558','2015-07-01 10:20:00','2015-07-01 10:20:00','2015-07-01 10:20:00',null,0,100);
+INSERT INTO Reservation(Roomno,LidCard,Ordertime,Maybeintime,Maybeouttime,Realouttime,Ordertype,Cashpledge)
+VALUES('103','678432578052572056','2015-07-01 10:20:00','2015-07-01 10:20:00','2015-07-01 10:20:00',null,0,100);
+INSERT INTO Reservation(Roomno,LidCard,Ordertime,Maybeintime,Maybeouttime,Realouttime,Ordertype,Cashpledge)
+VALUES('101','678438346582945628','2015-07-01 10:20:00','2015-07-01 10:20:00','2015-07-01 10:20:00',null,0,100);
+INSERT INTO Reservation(Roomno,LidCard,Ordertime,Maybeintime,Maybeouttime,Realouttime,Ordertype,Cashpledge)
+VALUES('110','123412128052507535','2015-07-01 10:20:00','2015-07-01 10:20:00','2015-07-01 10:20:00',null,1,100);
+INSERT INTO Reservation(Roomno,LidCard,Ordertime,Maybeintime,Maybeouttime,Realouttime,Ordertype,Cashpledge)
+VALUES('201','192641782238207538','2015-07-01 10:20:00','2015-07-01 10:20:00','2015-07-01 10:20:00', '2015-07-01 10:20:00', 1,1000);
+INSERT INTO Reservation(Roomno,LidCard,Ordertime,Maybeintime,Maybeouttime,Realouttime,Ordertype,Cashpledge)
+VALUES('403','852372738274623530','2015-07-01 10:20:00','2015-07-01 10:20:00','2015-07-01 10:20:00',null,1,5000);
+INSERT INTO Reservation(Roomno,LidCard,Ordertime,Maybeintime,Maybeouttime,Realouttime,Ordertype,Cashpledge)
+VALUES('102','678438346582945628','2015-07-01 10:20:00','2015-07-01 10:20:00','2015-07-01 10:20:00',null,0,100);
+INSERT INTO Reservation(Roomno,LidCard,Ordertime,Maybeintime,Maybeouttime,Realouttime,Ordertype,Cashpledge)
+VALUES('103','678438346582945628','2015-07-01 10:20:00','2015-07-01 10:20:00','2015-07-01 10:20:00',null,0,100);
+INSERT INTO Reservation(Roomno,LidCard,Ordertime,Maybeintime,Maybeouttime,Realouttime,Ordertype,Cashpledge)
+VALUES('110','678438346582945628','2015-07-01 10:20:00','2015-07-01 10:20:00','2015-07-01 10:20:00',null,0,100);
+INSERT INTO Reservation(Roomno,LidCard,Ordertime,Maybeintime,Maybeouttime,Realouttime,Ordertype,Cashpledge)
+VALUES('101','678438346582945628','2016-07-01 10:20:00','2015-07-01 10:20:00','2015-07-01 10:20:00',null,0,100);
+
+
+
