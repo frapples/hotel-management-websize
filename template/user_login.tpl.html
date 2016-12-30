@@ -85,7 +85,7 @@
                  on: 'blur'
              }
              ).api({
-                 url: '/api/user_login.php',
+                 url: '<?= Path::url(array(), "api", "login") ?>',
                  serializeForm: true,
                  method: 'post',
                  // arbitrary POST/GET same across all requests

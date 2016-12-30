@@ -26,7 +26,7 @@
 
              $(".button.div-logoff").api(
                  {
-                     url: '/api/user_logoff.php',
+                     url: '<?= Path::url(array(), "api", "logoff") ?>',
                      successTest: function(response) {
                          // test whether a JSON response is valid
                          return response.success || false;

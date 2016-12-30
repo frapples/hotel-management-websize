@@ -61,7 +61,7 @@ class ApiController {
         return call_user_func(array('ApiController', $api_name));
     }
 
-    static public function user_login()
+    static public function login()
     {
         $id_card = UserModel::check($_POST['username'], $_POST['password']);
 
@@ -76,7 +76,7 @@ class ApiController {
         );
     }
 
-    static public function user_logoff()
+    static public function logoff()
     {
         Session::clear();
         return array(
