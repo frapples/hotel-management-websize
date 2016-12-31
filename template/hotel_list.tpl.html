@@ -1,0 +1,253 @@
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <link rel="stylesheet" type="text/css" href="<?= Tpl::asset('semantic/semantic.min.css')?> ">
+        <!-- jquery 要先加载  -->
+        <script src="<?= Tpl::asset('jQuery.js')?>"></script>
+        <script src="<?= Tpl::asset('jquery.serialize-object.min.js')?>"></script>
+        <script src="<?= Tpl::asset('semantic/semantic.min.js')?>"></script>
+
+        <title>舒适温馨的旅馆</title>
+
+        <style type="text/css">
+         .menu .item{
+             font-size: 15px;
+         }
+
+         .div-main{
+             margin: 0 5% !important;
+         }
+        </style>
+
+        <script type="text/javascript">
+         "use strict";
+
+         $(function () {
+
+             $('.dropdown').dropdown({
+                 transition: 'slide down'
+             });
+
+             $(".button.div-logoff").api(
+                 {
+                     url: '<?= Path::url(array(), "api", "logoff") ?>',
+                     successTest: function(response) {
+                         // test whether a JSON response is valid
+                         return response.success || false;
+                     },
+
+                     onSuccess: function(response) {
+                         location.href="";
+                     },
+                     onFailure: function(response) {
+                     }
+                 });
+
+         });
+
+        </script>
+    </head>
+    <body>
+
+        <div class="ui secondary pointing menu">
+            <a href="<?= Path::url(array(), 'hotel_list') ?>" class="item">
+                <i class="big home icon"> </i>
+                旅馆主页
+            </a>
+
+            <div class="right menu">
+                <div class="item">
+                    <div class="ui icon input">
+                        <input placeholder="搜索..." type="text">
+                        <i class="search link icon"></i>
+                    </div>
+                </div>
+                <?php if (Tpl::api('is_login')): ?>
+
+                <?php if (!Tpl::api('is_admin')): ?>
+                <a href = "<?= Path::url(array(), 'user_space') ?>" class="ui item button">
+                    我的空间
+                </a>
+                <?php else: ?>
+                <a href = "<?= Path::url(array(), 'admin') ?>" class="ui item button">
+                    管理网站
+                </a>
+                <?php endif; ?>
+                <a class="ui item button div-logoff">
+                    退出网站
+                </a>
+                <?php else: ?>
+                <a href="<?= Path::url(array(), 'user_login') ?>" class="ui item button">
+                    登录|注册
+                </a>
+                <?php endif; ?>
+            </div>
+        </div>
+
+
+
+        <div class ="div-main">
+
+
+            <!-- <div class="ui two column stackable center aligned grid segment"> -->
+            <div class="ui two column stackable aligned grid segment">
+                <div class="column">
+
+                    <div class="ui teal dividing header">
+                        <i class="home icon"></i>
+                        <div class="content">
+                            普通房
+                            <div class="sub header">给您一个舒适的夜晚</div>
+                        </div>
+                    </div>
+
+                    <div class="ui teal floating dropdown labeled icon button">
+                        <i class="Calendar icon"></i>
+                        <span class="text">入住日期</span>
+                        <div class="menu">
+                            <div class="ui icon search input">
+                                <i class="search icon"></i>
+                                <input name="search" placeholder="搜索..." type="text">
+                            </div>
+                            <div class="divider"></div>
+                            <div class="item">
+                                2010年10月22日
+                            </div>
+                        </div>
+                    </div>
+
+                    至
+                    <div class="ui teal floating dropdown labeled icon button">
+                        <i class="Calendar icon"></i>
+                        <span class="text">退房日期</span>
+                        <div class="menu">
+                            <div class="ui icon search input">
+                                <i class="search icon"></i>
+                                <input name="search" placeholder="搜索..." type="text">
+                            </div>
+                            <div class="divider"></div>
+                            <div class="item">
+                                2010年10月22日
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="ui divided items">
+                        <?php foreach(Tpl::api('rooms') as $room): ?>
+                        <div class="item">
+                            <div class="image">
+                                <img src="<?= Tpl::asset('room/' . $room['type_id'] . '.png') ?>">
+                            </div>
+                            <div class="content">
+                                <a class="header"><?= $room['type_name'] ?></a>
+                                <div class="meta">
+                                    <span class="cinema">最多可住<?= $room['person_num'] ?>人</span>
+                                </div>
+                                <div class="description">
+                                    <p></p>
+                                </div>
+                                <div class="extra">
+                                    <div class="ui right floated primary button">
+                                        预定
+                                        <i class="right chevron icon"></i>
+                                    </div>
+                                    <div class="ui label">钟点房</div>
+                                    <div class="ui label">WIFI覆盖</div>
+                                </div>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+
+
+
+
+                </div>
+
+
+
+
+                <div class="ui vertical divider">
+                    Or
+                </div>
+
+                <div class="column">
+                    <div class="ui teal dividing header">
+                        <i class="home icon"></i>
+                        <div class="content">
+                            钟点房
+                            <div class="sub header">提供片刻休息的地方</div>
+                        </div>
+                    </div>
+
+
+                    <div class="ui teal floating dropdown labeled icon button">
+                        <i class="wait icon"></i>
+                        <span class="text">入住时间</span>
+                        <div class="menu">
+                            <div class="ui icon search input">
+                                <i class="search icon"></i>
+                                <input name="search" placeholder="搜索..." type="text">
+                            </div>
+                            <div class="divider"></div>
+                            <div class="item">
+                                今日10点30分
+                            </div>
+                        </div>
+                    </div>
+
+                    至
+                    <div class="ui teal floating dropdown labeled icon button">
+                        <i class="wait icon"></i>
+                        <span class="text">退房时间</span>
+                        <div class="menu">
+                            <div class="ui icon search input">
+                                <i class="search icon"></i>
+                                <input name="search" placeholder="搜索..." type="text">
+                            </div>
+                            <div class="divider"></div>
+                            <div class="item">
+                                次日11点00分
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="ui divided items">
+                        <?php foreach(Tpl::api('rooms') as $room): ?>
+                        <div class="item">
+                            <div class="image">
+                                <img src="<?= Tpl::asset('room/' . $room['type_id'] . '.png') ?>">
+                            </div>
+                            <div class="content">
+                                <a class="header"><?= $room['type_name'] ?></a>
+                                <div class="meta">
+                                    <span class="cinema">最多可住<?= $room['person_num'] ?>人</span>
+                                </div>
+                                <div class="description">
+                                    <p></p>
+                                </div>
+                                <div class="extra">
+                                    <div class="ui right floated primary button">
+                                        预定
+                                        <i class="right chevron icon"></i>
+                                    </div>
+                                    <div class="ui label">钟点房</div>
+                                    <div class="ui label">WIFI覆盖</div>
+                                </div>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+
+
+
+                </div>
+            </div>
+
+        </div>
+
+    </body>
+</html>

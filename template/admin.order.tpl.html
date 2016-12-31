@@ -18,6 +18,7 @@
       <th>入住区间</th>
       <th>已付押金</th>
       <th>联系方式</th>
+      <th>操作</th>
     </tr>
   </thead>
   <tbody>
@@ -28,15 +29,24 @@
       <td><?= $record['cost_type'] ?></td>
       <td><?= $record['order_time'] ?></td>
 
-      <td><?= $record['in_time'] ?> 到 <?= $record['out_time'] ?>
-          <a class="button div-vacate"
-             data-id_card="<?= $record['id_card'] ?>"
-             data-room_name="<?= $record['room_name'] ?>"
-             data-order_time="<?= $record['order_time'] ?>">退房</a>
-      </td>
-      <td><?= $record['cashpledge'] > 0 ? $record['cashpledge'] : '未支付' ?></td>
+      <td><?= $record['in_time'] ?> 到 <?= $record['out_time'] ?> </td>
+      <td><?= $record['cashpledge'] > 0 ? $record['cashpledge'] . '元' : '未支付' ?></td>
 
       <td><?= $record['phone'] ?></td>
+
+      <td>
+        <div class="ui buttons">
+            <div class="ui button div-vacate"
+             data-id_card="<?= $record['id_card'] ?>"
+             data-room_name="<?= $record['room_name'] ?>"
+                 data-order_time="<?= $record['order_time'] ?>"
+            >退房</div>
+            <div class="or" data-text="O"></div>
+            <div class="ui positive button">交押金</div>
+        </div>
+
+      </td>
+
     </tr>
     <?php endforeach; ?>
   </tbody>

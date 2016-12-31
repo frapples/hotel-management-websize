@@ -23,7 +23,7 @@
          }
 
          $(function () {
-         <?= file_get_contents(__DIR__ . '/admin.js') ?>
+         <?php include(__DIR__ . '/admin.js') ?>
              $('.menu .item').tab();
 
              $('.menu .item').tab({

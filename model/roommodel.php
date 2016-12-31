@@ -73,13 +73,15 @@ EOF;
     {
         $db = Database::instance();
         $sql = <<<EOF
-(SELECT Room.Roomno as room_name, Typename as type_name, Roomfloor as floor, ROUND(Pricepercent * 10, 1) as discount, order_count
+(SELECT Room.Roomno as room_name, Typename as type_name, Roomfloor as floor, ROUND(Pricepercent * 10, 1) as discount, order_count, RoomType.Typeno as type_id,
+Capacity as person_num
 FROM Room, RoomType, (SELECT Roomno, COUNT(*) as order_count  FROM Reservation WHERE Realouttime is null GROUP BY Roomno) as Tmp
 WHERE RoomType.Typeno = Room.Typeno and Room.Roomno = Tmp.Roomno)
 
 UNION
 
-(SELECT Room.Roomno as room_name, Typename as type_name, Roomfloor as floor, ROUND(Pricepercent * 10, 1) as discount, 0 as order_count
+(SELECT Room.Roomno as room_name, Typename as type_name, Roomfloor as floor, ROUND(Pricepercent * 10, 1) as discount, 0 as order_count,  RoomType.Typeno as type_id,
+Capacity as person_num
 FROM Room, RoomType
 WHERE RoomType.Typeno = Room.Typeno and
     NOT EXISTS (SELECT * FROM Reservation WHERE Reservation.Roomno = Room.Roomno))

@@ -41,6 +41,16 @@ class Controller {
         }
     }
 
+    static public function hotel_list()
+    {
+        $api = array(
+            'is_login' => Session::get('is_login', false),
+            'is_admin' => Session::get('is_admin', false),
+            'rooms' => RoomModel::rooms(),
+        );
+        Tpl::load("hotel_list", $api);
+    }
+
     static public function admin()
     {
         if (!Session::get('is_admin', false)) {
