@@ -11,6 +11,7 @@ spl_autoload_register(function ($class) {
 
     $maybe_paths = array(Path::join(ROOT_DIR, $class . ".php"),
                   Path::join(ROOT_DIR, "model", $class . ".php"),
+                  Path::join(ROOT_DIR, "utils", $class . ".php"),
                   Path::join(ROOT_DIR, "controller", $class . ".php"));
 
     foreach($maybe_paths as $path) {

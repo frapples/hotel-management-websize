@@ -17,6 +17,13 @@
          .div-main{
              margin: 0 5% !important;
          }
+
+         .real-price {
+             color: #DB2828;
+             font-size:20px;
+
+             font-weight: bold !important;
+         }
         </style>
 
         <script type="text/javascript">
@@ -42,6 +49,11 @@
                      onFailure: function(response) {
                      }
                  });
+
+             $(".button.div-order").on('click', function () {
+                 alert(JSON.stringify($('.form.div-order_clock_room').form('get value', 'in_time')));
+
+             });
 
          });
 
@@ -89,7 +101,7 @@
         <div class ="div-main">
 
 
-            <!-- <div class="ui two column stackable center aligned grid segment"> -->
+            <!-- <div class="ui two column stackable center aligned grid segment"><!--  -->
             <div class="ui two column stackable aligned grid segment">
                 <div class="column">
 
@@ -101,8 +113,10 @@
                         </div>
                     </div>
 
+                    <form class="ui form .div-order_day_room">
                     <div class="ui teal floating dropdown labeled icon button">
                         <i class="Calendar icon"></i>
+                        <input name="in_time" type="hidden">
                         <span class="text">入住日期</span>
                         <div class="menu">
                             <div class="ui icon search input">
@@ -110,15 +124,21 @@
                                 <input name="search" placeholder="搜索..." type="text">
                             </div>
                             <div class="divider"></div>
-                            <div class="item">
-                                2010年10月22日
+
+                            <?php for($offset = 0; $offset <= 20 * 24 * 60 * 60; $offset += 24 * 60 * 60): ?>
+                            <div class="item" data-value="<?= Tpl::api('dayroom_start_date') + $offset ?>">
+                                <?= date('Y年m月d日', Tpl::api('dayroom_start_date') + $offset) ?>
                             </div>
+                            <?php endfor; ?>
+
                         </div>
                     </div>
 
                     至
+
                     <div class="ui teal floating dropdown labeled icon button">
                         <i class="Calendar icon"></i>
+                        <input name="out_time" type="hidden">
                         <span class="text">退房日期</span>
                         <div class="menu">
                             <div class="ui icon search input">
@@ -126,12 +146,18 @@
                                 <input name="search" placeholder="搜索..." type="text">
                             </div>
                             <div class="divider"></div>
-                            <div class="item">
-                                2010年10月22日
+
+
+                            <?php for($offset = 0; $offset <= 20 * 24 * 60 * 60; $offset += 24 * 60 * 60): ?>
+                            <div class="item" data-value="<?= Tpl::api('dayroom_start_date') + $offset ?>">
+                                <?= date('Y年m月d日', Tpl::api('dayroom_start_date') + $offset) ?>
                             </div>
+                            <?php endfor; ?>
                         </div>
                     </div>
+                    </form>
 
+                    <div class="ui divider"></div>
 
                     <div class="ui divided items">
                         <?php foreach(Tpl::api('rooms') as $room): ?>
@@ -142,25 +168,37 @@
                             <div class="content">
                                 <a class="header"><?= $room['type_name'] ?></a>
                                 <div class="meta">
-                                    <span class="cinema">最多可住<?= $room['person_num'] ?>人</span>
+                                    <span class="cinema">可住<?= $room['person_num'] ?>人，<?=$room['area'] ?>平米</span>
                                 </div>
                                 <div class="description">
-                                    <p></p>
+                                    <!-- <div class="ui red basic segment"> -->
+                                    <p>
+                                        <del>
+                                            <i class="Yen icon"></i>
+                                            <?= $room['price_per_day'] ?>元/晚
+                                        </del>
+                                    </p>
+                                    <p class="real-price">
+                                        <i class="Yen red icon"></i>
+                                        <?= $room['price_per_day'] ?>元/晚
+                                    </p>
+                                        <!-- </div> -->
                                 </div>
                                 <div class="extra">
                                     <div class="ui right floated primary button">
                                         预定
                                         <i class="right chevron icon"></i>
                                     </div>
-                                    <div class="ui label">钟点房</div>
-                                    <div class="ui label">WIFI覆盖</div>
+                                    <div class="ui label">
+                                        <i class="wifi icon"></i>
+                                        WIFI覆盖
+                                    </div>
+                                    <div class="ui label">淋浴热水</div>
                                 </div>
                             </div>
                         </div>
                         <?php endforeach; ?>
                     </div>
-
-
 
 
                 </div>
@@ -182,8 +220,11 @@
                     </div>
 
 
-                    <div class="ui teal floating dropdown labeled icon button">
+                    <form class="ui form div-order_clock_room">
+                    <div class="ui teal floating dropdown labeled icon button" >
                         <i class="wait icon"></i>
+                        <!-- 使用一个隐藏的输入框来支持表单操作  -->
+                        <input name="in_time" type="hidden">
                         <span class="text">入住时间</span>
                         <div class="menu">
                             <div class="ui icon search input">
@@ -191,15 +232,20 @@
                                 <input name="search" placeholder="搜索..." type="text">
                             </div>
                             <div class="divider"></div>
-                            <div class="item">
-                                今日10点30分
+                            <?php $today = Date::close_hour() ?>
+                            <?php for($offset = 0; $offset < 12 * 30 * 64 ; $offset += 30 * 60): ?>
+                            <div class="item" data-value="<?= $today + $offset ?>">
+                                <?= date('d日H点i分', $today + $offset) ?>
                             </div>
+                            <?php endfor; ?>
                         </div>
                     </div>
 
                     至
-                    <div class="ui teal floating dropdown labeled icon button">
+
+                    <div class="ui teal floating dropdown labeled icon button" >
                         <i class="wait icon"></i>
+                        <input name="out_time" type="hidden">
                         <span class="text">退房时间</span>
                         <div class="menu">
                             <div class="ui icon search input">
@@ -207,13 +253,17 @@
                                 <input name="search" placeholder="搜索..." type="text">
                             </div>
                             <div class="divider"></div>
-                            <div class="item">
-                                次日11点00分
+                            <?php for($offset = 0; $offset < 12 * 30 * 64 ; $offset += 30 * 60): ?>
+                            <div class="item" data-value="<?= $today + $offset ?>">
+                                <?= date('d日H点i分', $today + $offset) ?>
                             </div>
+                            <?php endfor; ?>
                         </div>
                     </div>
+                    </form>
 
 
+                    <div class="ui divider"></div>
 
                     <div class="ui divided items">
                         <?php foreach(Tpl::api('rooms') as $room): ?>
@@ -224,18 +274,30 @@
                             <div class="content">
                                 <a class="header"><?= $room['type_name'] ?></a>
                                 <div class="meta">
-                                    <span class="cinema">最多可住<?= $room['person_num'] ?>人</span>
+                                    <span class="cinema">可住<?= $room['person_num'] ?>人，<?=$room['area'] ?>平米</span>
                                 </div>
                                 <div class="description">
-                                    <p></p>
+                                    <p>
+                                        <del>
+                                            <i class="Yen icon"></i>
+                                            <?= $room['price_per_hour'] ?>元/时
+                                        </del>
+                                    </p>
+                                    <p class="real-price">
+                                        <i class="Yen red icon"></i>
+                                        <?= $room['price_per_hour'] ?>元/时
+                                    </p>
                                 </div>
                                 <div class="extra">
-                                    <div class="ui right floated primary button">
+                                    <div class="ui right floated primary button div-order">
                                         预定
                                         <i class="right chevron icon"></i>
                                     </div>
-                                    <div class="ui label">钟点房</div>
-                                    <div class="ui label">WIFI覆盖</div>
+                                    <div class="ui label">
+                                        <i class="wifi icon"></i>
+                                        WIFI覆盖
+                                    </div>
+                                    <div class="ui label">淋浴热水</div>
                                 </div>
                             </div>
                         </div>

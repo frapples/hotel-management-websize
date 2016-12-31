@@ -47,7 +47,9 @@ class Controller {
             'is_login' => Session::get('is_login', false),
             'is_admin' => Session::get('is_admin', false),
             'rooms' => RoomModel::rooms(),
+            'dayroom_start_date' => Date::only_date(),
         );
+
         Tpl::load("hotel_list", $api);
     }
 
