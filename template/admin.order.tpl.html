@@ -1,0 +1,77 @@
+
+<!-- <h2 class="ui top attached header"> -->
+<h2 class="ui header">
+    <i class="refresh icon div-refresh"></i>
+  <div class="content">
+    所有预约的订单
+    <div class="sub header">未交押金的住客，请及时联系提醒补交； 逾期未退房的住客，请及时询问是否需要续房 </div>
+  </div>
+</h2>
+
+<table class="ui celled blue table">
+  <thead>
+    <tr>
+      <th>房间</th>
+      <th>住客</th>
+      <th>预约类型</th>
+      <th>预约时间</th>
+      <th>入住区间</th>
+      <th>已付押金</th>
+      <th>联系方式</th>
+    </tr>
+  </thead>
+  <tbody>
+      <?php foreach(Tpl::api('records') as $record): ?>
+    <tr class=" <?= $record['cashpledge'] == 0 || $record['is_timeout'] ? 'negative' : ''  ?> ">
+        <td> <?=$record['room_name'] ?> (<?= $record['room_type_name'] ?>)</td>
+      <td><?= $record['name'] . ($record['sex'] == '男' ? '先生' : '女士') ?></td>
+      <td><?= $record['cost_type'] ?></td>
+      <td><?= $record['order_time'] ?></td>
+
+      <td><?= $record['in_time'] ?> 到 <?= $record['out_time'] ?>
+          <a class="button div-vacate"
+             data-id_card="<?= $record['id_card'] ?>"
+             data-room_name="<?= $record['room_name'] ?>"
+             data-order_time="<?= $record['order_time'] ?>">退房</a>
+      </td>
+      <td><?= $record['cashpledge'] > 0 ? $record['cashpledge'] : '未支付' ?></td>
+
+      <td><?= $record['phone'] ?></td>
+    </tr>
+    <?php endforeach; ?>
+  </tbody>
+
+  <tfoot class="full-width">
+      <tr>
+          <th colspan="7">
+              <p>共<?= count(Tpl::api('records')) ?>条订单，
+                  其中有<?= count(array_filter(Tpl::api('records'), function ($i) { return $i['is_timeout']; })) ?>条超时订单，
+                  其中有<?= count(array_filter(Tpl::api('records'), function ($i) { return $i['cashpledge'] == 0; })) ?>位住客未付押金。
+              </p>
+          </th>
+      </tr>
+  </tfoot>
+
+</table>
+
+
+ <div class="ui small test modal">
+    <i class="close icon"></i>
+    <div class="header">
+        确认退房
+    </div>
+    <div class="content">
+        <p>请检查房间各项设施后再退房。退房后，请退还给住客对应的押金。</p>
+      <p>你确定退房吗？</p>
+    </div>
+    <div class="actions">
+      <div class="ui negative button">
+       取消
+      </div>
+      <div class="ui positive right labeled icon button">
+        确认
+        <i class="checkmark icon"></i>
+      </div>
+    </div>
+  </div>
+

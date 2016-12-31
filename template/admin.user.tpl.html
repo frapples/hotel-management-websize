@@ -1,0 +1,44 @@
+<h2 class="ui header">
+  <i class="user icon"></i>
+  <div class="content">
+      住客注册信息
+      <div class="sub header">查看管理住客</div>
+  </div>
+</h2>
+
+<!-- 每列等宽 -->
+<table class="ui blue seven column table">
+  <thead>
+    <tr>
+      <th>住客</th>
+      <th>vip等级</th>
+      <th>年龄</th>
+      <th>积分</th>
+      <th>联系方式</th>
+      <th>注册时间</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+      <?php foreach(Tpl::api('users') as $user): ?>
+    <tr>
+      <td><?= $user['name'] . ($user['sex'] == '男' ? '先生' : '女士') ?></td>
+      <td><?= $user['vip_name'] ?></td>
+      <td><?= $user['age'] ?></td>
+      <td><?= $user['score'] ?> </td>
+      <td><?= $user['phone'] ?></td>
+      <td><?= $user['register_time'] ?></td>
+      <td>
+        <div class="ui buttons">
+            <div class="ui button">修改</div>
+            <div class="or" data-text="O"></div>
+            <div class="ui positive button">删除</div>
+        </div>
+
+      </td>
+    </tr>
+    <?php endforeach; ?>
+  </tbody>
+<tfoot class="full-width">
+</tfoot>
+</table>

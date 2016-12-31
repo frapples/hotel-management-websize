@@ -1,0 +1,104 @@
+<h2 class="ui header">
+  <i class="user icon"></i>
+  <div class="content">
+      客房种类
+      <div class="sub header">查看房间种类信息</div>
+  </div>
+</h2>
+
+<!-- 每列等宽 -->
+<table class="ui blue seven column table">
+  <thead>
+    <tr>
+      <th>房间类型</th>
+      <th>钟点房价格</th>
+      <th>普通房价格</th>
+      <th>面积</th>
+      <th>可住人数</th>
+      <th>客房统计</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+      <?php foreach(Tpl::api('room_types') as $type): ?>
+    <tr>
+      <td><?= $type['type_name'] ?></td>
+      <td><?= $type['price_per_hour'] ?>元/小时</td>
+      <td><?= $type['price_per_day'] ?>元/天 </td>
+      <td><?= $type['area'] ?>平方米</td>
+      <td><?= $type['person_num'] ?>人</td>
+      <td><?= $type['room_count'] ?>间</td>
+      <td>
+        <div class="ui buttons">
+            <div class="ui button">修改</div>
+            <div class="or" data-text="O"></div>
+            <div class="ui positive button">删除</div>
+        </div>
+
+      </td>
+    </tr>
+    <?php endforeach; ?>
+  </tbody>
+<tfoot class="full-width">
+    <tr>
+      <th colspan="6">
+          <div class="ui right floated small primary labeled icon button">
+          <i class="home icon"></i> 添加新种类
+        </div>
+      </th>
+      <th></th>
+    </tr>
+  </tfoot>
+</table>
+
+
+<h2 class="ui header">
+  <i class="user icon"></i>
+  <div class="content">
+      管理客房
+      <div class="sub header">查看房间信息</div>
+  </div>
+</h2>
+
+<table class="ui six column table">
+  <thead>
+    <tr>
+      <th>房间号</th>
+      <th>房间类型</th>
+      <th>所在楼层</th>
+      <th>优惠折扣</th>
+      <th>订单统计</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+      <?php foreach(Tpl::api('rooms') as $room): ?>
+    <tr>
+      <td><?= $room['room_name'] ?></td>
+      <td><?= $room['type_name'] ?></td>
+      <td><?= $room['floor'] ?>楼</td>
+      <td><?= $room['discount'] == '10' ? '原价' : ($room['discount'] . '折') ?></td>
+      <td><?= $room['order_count'] ?>条</td>
+
+      <td>
+        <div class="ui buttons">
+            <div class="ui button">修改</div>
+            <div class="or" data-text="O"></div>
+            <div class="ui positive button">删除</div>
+        </div>
+
+      </td>
+    </tr>
+    <?php endforeach; ?>
+  </tbody>
+<tfoot class="full-width">
+    <tr>
+      <th colspan="5">
+          <div class="ui right floated small primary labeled icon button">
+          <i class="home icon"></i> 添加新客房
+        </div>
+      </th>
+      <th></th>
+    </tr>
+  </tfoot>
+</table>

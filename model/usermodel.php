@@ -50,4 +50,19 @@ class UserModel {
 
         return $sth->rowCount() > 0;
     }
+
+    static public function users()
+    {
+        $db = Database::instance();
+
+        $sql = <<<EOF
+SELECT LidCard as id_card, Lname as name, Lage as age, Lsex as sex, Lphone as phone, Lscore as score, LregistrationTime as register_time, Vname as vip_name
+FROM Lodger, Viptype
+WHERE Lodger.Vid = Viptype.Vid
+EOF;
+
+        $sth = $db->query_bind($sql);
+
+        return $sth->fetchAll();
+    }
 }

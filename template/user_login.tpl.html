@@ -98,9 +98,14 @@
                  },
 
                  onSuccess: function(response) {
-                     form_message($(".ui.form > .message"), "positive", "登录成功！正在跳转。。。 ");
+                     if (response.identity == 'user') {
+                         form_message($(".ui.form > .message"), "positive", "尊敬的用户，登录成功！正在跳转。。。 ");
+                         location.href="<?= Tpl::api('located_url')['user'] ?>";
+                     } else if (response.identity == 'admin') {
+                         form_message($(".ui.form > .message"), "positive", "尊敬的管理员，登录成功！正在跳转。。。 ");
+                         location.href="<?= Tpl::api('located_url')['admin'] ?>";
+                     }
 
-                     location.href="<?= Tpl::api('located_url') ?>";
                  },
                  onFailure: function(response) {
                      form_message($(".ui.form > .message"), "negative", "用户名或密码错误，请重试");
@@ -214,7 +219,7 @@
 
                  onSuccess: function(response) {
                      form_message($(".ui.form > .message"), "positive", "注册成功！正在跳转。。。");
-                     location.href="<?= Tpl::api('located_url') ?>";
+                     location.href="<?= Tpl::api('located_url')['user'] ?>";
                  },
                  onFailure: function(response) {
                      if (response.reason == "user_existed") {

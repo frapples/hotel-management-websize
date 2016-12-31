@@ -1,0 +1,35 @@
+<h2 class="ui header">
+  <i class="user icon"></i>
+  <div class="content">
+      <?php $self_admin = Tpl::api('self_admin'); ?>
+      尊敬的<?= $self_admin['name'] . ($self_admin['sex'] == '男' ? '先生' : '女士') ?>，您好！
+      <div class="sub header">查看您和其它员工的信息</div>
+  </div>
+</h2>
+
+<table class="ui blue table">
+  <thead>
+    <tr>
+      <th>工号</th>
+      <th>姓名</th>
+      <th>职务</th>
+      <th>年龄</th>
+      <th>电话</th>
+      <th>家庭住址</th>
+    </tr>
+  </thead>
+  <tbody>
+      <?php foreach(Tpl::api('admins') as $admin): ?>
+    <tr class="<?= $admin['admin_id'] == $self_admin['admin_id'] ? 'positive' : '' ?> ">
+      <td><?= $admin['admin_id'] ?></td>
+      <td><?= $admin['name'] . ($admin['sex'] == '男' ? '先生' : '女士') ?></td>
+      <td><?= $admin['job_name'] ?></td>
+      <td><?= $admin['age'] ?></td>
+      <td><?= $admin['phone'] ?></td>
+      <td><?= $admin['address'] ?></td>
+    </tr>
+    <?php endforeach; ?>
+  </tbody>
+  <tfoot>
+  </tfoot>
+</table>

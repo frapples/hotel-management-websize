@@ -1,0 +1,95 @@
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <link rel="stylesheet" type="text/css" href="<?= Tpl::asset('semantic/semantic.min.css')?> ">
+        <!-- jquery 要先加载  -->
+        <script src="<?= Tpl::asset('jQuery.js')?>"></script>
+        <script src="<?= Tpl::asset('jquery.serialize-object.min.js')?>"></script>
+        <script src="<?= Tpl::asset('semantic/semantic.min.js')?>"></script>
+
+        <title>管理页面</title>
+
+        <script type="text/javascript">
+         "use strict";
+
+
+         function form_message($msg, class_name, msg)
+         {
+             $msg.removeClass("negative");
+             $msg.removeClass("positive");
+             $msg.addClass(class_name);
+             $msg.text(msg);
+             $msg.show();
+         }
+
+         $(function () {
+         <?= file_get_contents(__DIR__ . '/admin.js') ?>
+             $('.menu .item').tab();
+
+             $('.menu .item').tab({
+                 /* context : '.menu .item',*/
+                 auto: true,
+                 path: '/admin_sub/'
+             });
+
+             $('.menu .item').tab('change tab', 'admin_info');
+
+             $(".button.div-logoff").api(
+                 {
+                     url: '<?= Path::url(array(), "api", "logoff") ?>',
+                     successTest: function(response) {
+                         // test whether a JSON response is valid
+                         return response.success || false;
+                     },
+
+                     onSuccess: function(response) {
+                         location.href="";
+                     },
+                     onFailure: function(response) {
+                     }
+                 });
+
+         });
+
+        </script>
+    </head>
+    <body>
+
+        <div class="ui secondary pointing menu">
+            <a href="<?= Path::url(array(), 'hotel_list') ?>" class="item">
+                <i class="big home icon"> </i>
+                旅馆主页
+            </a>
+            <a class="active item" data-tab="admin_info">
+                <i class="setting icon"></i> 管理员信息
+            </a>
+            <a class="item" data-tab="manage_room">
+                <i class="Building icon"></i> 管理房间
+            </a>
+            <a class="item" data-tab="manage_user">
+                <i class="Users icon"></i> 管理用户
+            </a>
+            <a class="item" data-tab="manage_order">
+                <i class="Browser icon"></i> 处理订单
+            </a>
+
+            <div class="right menu">
+                <div class="item">
+                    <div class="ui icon input">
+                        <input placeholder="搜索..." type="text">
+                        <i class="search link icon"></i>
+                    </div>
+                </div>
+                <a class="ui item button div-logoff">
+                    退出
+                </a>
+            </div>
+        </div>
+
+        <div class="ui bottom attached tab segment" data-tab="admin_info"></div>
+        <div class="ui bottom attached tab segment" data-tab="manage_room"></div>
+        <div class="ui bottom attached tab segment" data-tab="manage_user"></div>
+        <div class="ui bottom attached tab segment" data-tab="manage_order"></div>
+
+    </body>
+</html>
