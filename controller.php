@@ -48,6 +48,7 @@ class Controller {
             'is_admin' => Session::get('is_admin', false),
             'rooms' => RoomModel::rooms(),
             'dayroom_start_date' => Date::only_date(),
+            'id_card' => Session::get('id_card', ''),
         );
 
         Tpl::load("hotel_list", $api);
@@ -118,7 +119,7 @@ class ApiController {
         if (!method_exists('ApiController', $api_name)) {
             return array(
                     "success"=> false,
-                    "msg"=> "不存在的api"
+                    "reason"=> "不存在的api"
                 );
         }
 
@@ -193,7 +194,7 @@ class ApiController {
 
     static public function vacate_room()
     {
-        if (!((Session::get("is_login", false) && Session::get("id_card", "") != $_POST['id_card']) ||
+        if (!((Session::get("is_login", false) && Session::get("id_card", "") == $_POST['id_card']) ||
              (Session::get("is_admin", false)))) {
             return array(
                 "success" => false,
@@ -205,6 +206,68 @@ class ApiController {
         return array(
             'success' => $success,
             'reason' => ""
+        );
+    }
+
+    static public function check_room_order() {
+        if (!((Session::get("is_login", false) && Session::get("id_card", "") == $_POST['id_card']) ||
+              (Session::get("is_admin", false)))) {
+            return array(
+                "success" => false,
+                "reason" => "permission"
+            );
+        }
+
+        /* 数据有效性检查　*/
+        if (!($_POST['in_time'] && $_POST['out_time'] &&
+            $_POST['in_time'] < $_POST['out_time'])) {
+            /* 实际上这里应该还需要检查时间是否整点 */
+            return array(
+                'success' => false,
+                'reason' => 'error_time'
+            );
+        }
+
+        $success = !RoomModel::is_order_conflict($_POST['room_name'], $_POST['in_time'], $_POST['out_time'], $_POST['type']);
+
+        $res = array();
+        $res['success'] = $success;
+
+        if ($success) {
+            $res['price'] = RoomModel::price($_POST['id_card'], $_POST['room_name'], $_POST['in_time'], $_POST['out_time'], $_POST['type']);
+            $res['cashpledge'] = RoomModel::cal_cashpledge($res['price']);
+            $res['room_type'] = RoomModel::room($_POST['room_name'])['type_name'];
+            $res['room_name'] = $_POST['room_name'];
+            if ($_POST['type'] == 'clock') {
+                $res['in_time'] = $_POST['in_time'];
+                $res['out_time'] = $_POST['out_time'];
+            } else {
+                $res['in_time'] = RoomModel::dayroom_intime_std($_POST['in_time']);
+                $res['out_time'] = RoomModel::dayroom_outtime_std($_POST['out_time']);
+            }
+            $res['formated_in_time'] = date('Y年m月d日 H时i分', $res['in_time']);
+            $res['formated_out_time'] = date('Y年m月d日 H时i分', $res['out_time']);
+        } else {
+            $res['reason'] = 'time_conflict';
+        }
+
+        return $res;
+    }
+
+    static public function order_room() {
+        if (!((Session::get("is_login", false) && Session::get("id_card", "") == $_POST['id_card']) ||
+              (Session::get("is_admin", false)))) {
+            return array(
+                "success" => false,
+                "reason" => "permission"
+            );
+        }
+
+        /* 其它检查，暂时没写 */
+        $success = RoomModel::order_room($_POST['id_card'], $_POST['room_name'], $_POST['in_time'], $_POST['out_time'], $_POST['type']);
+
+        return array(
+            'success' => $success
         );
     }
 }

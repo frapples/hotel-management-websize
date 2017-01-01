@@ -29,6 +29,33 @@
         <script type="text/javascript">
          "use strict";
 
+
+         function modal_warn(warn_title, warn_content)
+         {
+             var $warn = $('.modal.warn');
+
+             var raw_html = $warn.html();
+             template_replace($warn, {
+                 'warn_title': warn_title,
+                 'warn_content': warn_content
+             });
+
+             $warn.modal({
+                 onHidden: function () {
+                     $warn.html(raw_html);
+                 }
+             }).modal('show');
+         }
+
+         function template_replace($dom, data) {
+
+             var html = $dom.html();
+             for (var key in data) {
+                 html = html.replace('{' + key + '}', data[key]);
+             }
+             $dom.html(html);
+         }
+
          $(function () {
 
              $('.dropdown').dropdown({
@@ -50,10 +77,101 @@
                      }
                  });
 
-             $(".button.div-order").on('click', function () {
-                 alert(JSON.stringify($('.form.div-order_clock_room').form('get value', 'in_time')));
+             $('.ui.modal').modal();
 
+             $(".button.div-order_clock").on('click', function () {
+                 try_order_room(
+                     $(this).data('value'),
+                     $('.form.div-order_clock_room').form('get value', 'in_time'),
+                     $('.form.div-order_clock_room').form('get value', 'out_time'),
+                     'clock');
              });
+
+
+             $(".button.div-order_day").on('click', function () {
+                 try_order_room(
+                     $(this).data('value'),
+                     $('.form.div-order_day_room').form('get value', 'in_time'),
+                     $('.form.div-order_day_room').form('get value', 'out_time'),
+                     'day');
+             });
+
+             function try_order_room(room_name, in_time, out_time, type) {
+                 var data = {
+                     'id_card': "<?= TPl::api('id_card') ?>",
+                     'room_name': room_name,
+                     'in_time': in_time,
+                     'out_time': out_time,
+                     'type': type
+                 };
+
+                 $.ajax({
+                     url: "<?= Path::url(array(), 'api', 'check_room_order') ?>",
+                     type: "POST",
+                     dataType: "json",
+                     data: data,
+                     success: function(response) {
+                         if (response.success) {
+
+                             order_room(data, response);
+
+                         } else {
+
+                             var warn_title;
+                             var warn_content;
+                             if (response.reason == 'permission') {
+                                 location.href = "<?= Path::url(array(), 'user_login') ?>";
+                                 return;
+
+                             } else if (response.reason == 'error_time') {
+                                 warn_title = "入住区间有误";
+                                 warn_content = "您选择的入住区间可能有误，请选择入住区间，并且检查入住时间是否早于退房时间，然后重试。";
+                             } else if (response.reason == 'time_conflict') {
+                                 warn_title = '入住区间被预定';
+                                 warn_content = "很抱歉，您选择的入住区间已经被预定，请修改。";
+                             } else {
+                                 alert(response.reason);
+                             }
+
+                             modal_warn(warn_title, warn_content);
+
+
+                         }
+                     }});
+             }
+
+             function order_room(data, response)
+             {
+                 var $modal = $('.div-order.modal');
+
+                 var raw_html = $modal.html();
+                 template_replace($modal, response);
+
+                 $modal.modal({
+                     onHidden: function () {
+                         $modal.html(raw_html);
+                     },
+                     onDeny    : function() {
+                     },
+                     onApprove : function() {
+
+                         $.ajax({
+                             url: "<?= Path::url(array(), 'api', 'order_room') ?>",
+                             type: "POST",
+                             dataType: "json",
+                             data: data,
+                             success: function(response) {
+                                 if (response.success) {
+                                     location.href = "<?= Path::url(array(), 'user_space') ?>";
+                                 } else {
+                                     modal_warn("预定失败", "抱歉，预定遇到了问题，请您重新再试。");
+                                 }
+                             }});
+
+                     }
+                 }).modal('show');
+             }
+
 
          });
 
@@ -113,7 +231,10 @@
                         </div>
                     </div>
 
-                    <form class="ui form .div-order_day_room">
+                    <p>
+                        请选择入住区间：
+                    </p>
+                    <form class="ui form div-order_day_room">
                     <div class="ui teal floating dropdown labeled icon button">
                         <i class="Calendar icon"></i>
                         <input name="in_time" type="hidden">
@@ -180,12 +301,12 @@
                                     </p>
                                     <p class="real-price">
                                         <i class="Yen red icon"></i>
-                                        <?= $room['price_per_day'] ?>元/晚
+                                        <?= $room['real_price_per_day'] ?>元/晚
                                     </p>
                                         <!-- </div> -->
                                 </div>
                                 <div class="extra">
-                                    <div class="ui right floated primary button">
+                                    <div class="ui right floated primary button div-order_day" data-value="<?=$room['room_name']?>">
                                         预定
                                         <i class="right chevron icon"></i>
                                     </div>
@@ -220,6 +341,9 @@
                     </div>
 
 
+                    <p>
+                        请选择入住区间：
+                    </p>
                     <form class="ui form div-order_clock_room">
                     <div class="ui teal floating dropdown labeled icon button" >
                         <i class="wait icon"></i>
@@ -280,7 +404,7 @@
                                     <p>
                                         <del>
                                             <i class="Yen icon"></i>
-                                            <?= $room['price_per_hour'] ?>元/时
+                                            <?= $room['real_price_per_hour'] ?>元/时
                                         </del>
                                     </p>
                                     <p class="real-price">
@@ -289,7 +413,7 @@
                                     </p>
                                 </div>
                                 <div class="extra">
-                                    <div class="ui right floated primary button div-order">
+                                    <div class="ui right floated primary button div-order_clock" data-value="<?=$room['room_name']?>">
                                         预定
                                         <i class="right chevron icon"></i>
                                     </div>
@@ -309,6 +433,74 @@
                 </div>
             </div>
 
+        </div>
+
+
+        <div class="ui div-order modal">
+            <i class="close icon"></i>
+            <div class="header">
+                预定房间
+            </div>
+            <div class="content">
+                <div class="ui info message">
+                    <div class="header">
+                        <i class="Calendar Outline icon"> </i>
+                        确认订单信息
+                    </div>
+                    以下是您订购的房间，请确认您的订单信息：
+                    <ul class="list">
+                        <div class="ui stacked green segment">
+                            <li>订购房型：{room_type}</li>
+                            <li>您的房间号：{room_name}</li>
+                            <li>入住区间：{formated_in_time} 至 {formated_out_time}</li>
+                            <li>价格(优惠后)：
+                                <i class="yen icon"> </i>
+                                {price}元</li>
+                            <li>需付押金：
+                                <i class="yen icon"> </i>
+                                {cashpledge}元</li>
+                        </div>
+                        <div class="ui stacked segment">
+                            <li>本店支持支付宝和微信支付，轻松便捷！</li>
+                            <li>请支付足额的押金后再入住，谢谢配合！</li>
+                            <li>退房时，本店检查房间各设施完好后，退还支付的全部押金。</li>
+                            <li>请在预定的时间之前至前台退房，超时则要补交超时费，谢谢理解！</li>
+                        </div>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="actions">
+                <div class="ui cancel button">
+                    再去看看
+                </div>
+                <div class="ui positive right labeled icon button">
+                    确认预定
+                    <i class="checkmark icon"></i>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="ui warn modal">
+            <i class="close icon"></i>
+            <div class="header">
+                温馨提示
+            </div>
+            <div class="content">
+                <div class="ui warning message">
+                    <div class="header">
+                        {warn_title}
+                    </div>
+                    <i class="Warning Circle icon"></i>
+                    {warn_content}
+                </div>
+            </div>
+            <div class="actions">
+                <div class="ui cancel button">
+                    回去修改
+                </div>
+            </div>
         </div>
 
     </body>
