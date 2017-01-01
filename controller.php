@@ -194,8 +194,7 @@ class ApiController {
 
     static public function vacate_room()
     {
-        if (!((Session::get("is_login", false) && Session::get("id_card", "") == $_POST['id_card']) ||
-             (Session::get("is_admin", false)))) {
+        if (!Session::get("is_admin", false)) {
             return array(
                 "success" => false,
                 "reason" => "permission"
@@ -270,4 +269,67 @@ class ApiController {
             'success' => $success
         );
     }
+
+    static public function add_room_type() {
+
+        if(!Session::get("is_admin", false)) {
+            return array(
+                "success" => false,
+                "reason" => "permission"
+            );
+        }
+
+        $success = RoomModel::add_room_type($_POST['type_name'], $_POST['area'], $_POST['person_num'], $_POST['price_per_day'], $_POST['price_per_hour']);
+
+        return array(
+            'success' => $success
+        );
+    }
+
+    static public function del_room_type() {
+        if(!Session::get("is_admin", false)) {
+            return array(
+                "success" => false,
+                "reason" => "permission"
+            );
+        }
+
+        $success = RoomModel::del_room_type($_POST['type_id']);
+        return array(
+            'success' => $success
+        );
+    }
+
+
+
+    static public function add_room() {
+
+        if(!Session::get("is_admin", false)) {
+            return array(
+                "success" => false,
+                "reason" => "permission"
+            );
+        }
+
+        $success = RoomModel::add_room($_POST['room_name'], $_POST['type_name'], $_POST['floor'], $_POST['discount']);
+
+        return array(
+            'success' => $success
+        );
+    }
+
+    static public function del_room() {
+        if(!Session::get("is_admin", false)) {
+            return array(
+                "success" => false,
+                "reason" => "permission"
+            );
+        }
+
+        $success = RoomModel::del_room($_POST['room_name']);
+        return array(
+            'success' => $success
+        );
+    }
+
 }

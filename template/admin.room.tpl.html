@@ -32,7 +32,7 @@
         <div class="ui buttons">
             <div class="ui button">修改</div>
             <div class="or" data-text="O"></div>
-            <div class="ui positive button">删除</div>
+            <div class="ui positive button div-del_room_type" data-type_id="<?= $type['type_id'] ?>">删除</div>
         </div>
 
       </td>
@@ -42,7 +42,7 @@
 <tfoot class="full-width">
     <tr>
       <th colspan="6">
-          <div class="ui right floated small primary labeled icon button">
+          <div class="ui right floated small primary labeled icon button div-add_room_type">
           <i class="home icon"></i> 添加新种类
         </div>
       </th>
@@ -84,7 +84,7 @@
         <div class="ui buttons">
             <div class="ui button">修改</div>
             <div class="or" data-text="O"></div>
-            <div class="ui positive button">删除</div>
+            <div class="ui positive button div-del_room" data-room_name="<?= $room['room_name'] ?>">删除</div>
         </div>
 
       </td>
@@ -94,7 +94,7 @@
 <tfoot class="full-width">
     <tr>
       <th colspan="5">
-          <div class="ui right floated small primary labeled icon button">
+          <div class="ui right floated small primary labeled icon button div-add_room">
           <i class="home icon"></i> 添加新客房
         </div>
       </th>
@@ -102,3 +102,139 @@
     </tr>
   </tfoot>
 </table>
+
+
+<div class="ui div-add modal">
+    <i class="close icon"></i>
+    <div class="header">
+        添加...
+    </div>
+    <div class="content">
+
+        <div class="ui secondary pointing three item demo menu">
+            <a class="active item" data-tab="first">
+                添加新种类
+            </a>
+            <a class="item" data-tab="second">
+                添加新客房
+            </a>
+
+        </div>
+
+        <div class="ui bottom attached active tab segment" data-tab="first">
+
+            <div class="ui three column stackable grid ">
+                <div class="column"></div>
+
+                <div class="column">
+                    <form class="ui fluid form div-add_room_type">
+                        <div class="field">
+                            <label>房型名称</label>
+                            <input placeholder="" name="type_name" type="text">
+                        </div>
+
+                        <div class="two fields">
+                            <div class="field">
+                                <label>占地面积</label>
+                                <input placeholder="" name="area" type="text">
+                            </div>
+
+                            <div class="field">
+                                <label>可住人数</label>
+                                <input placeholder="" name="person_num" type="text">
+                            </div>
+                        </div>
+
+
+                        <div class="two fields">
+                            <div class="field">
+                                <label>普通房价格/晚</label>
+                                <input placeholder="" name="price_per_day" type="text">
+                            </div>
+
+                            <div class="field">
+                                <label>终点房价格/时</label>
+                                <input placeholder="" name="price_per_hour" type="text">
+                            </div>
+                        </div>
+
+                        <div class="inline field">
+                            <div class="ui blue submit button">添加</div>
+                        </div>
+
+                    </form>
+                    </div>
+
+                <div class="column"></div>
+            </div>
+        </div>
+
+        <div class="ui bottom attached tab segment" data-tab="second">
+
+            <div class="ui three column stackable grid ">
+                <div class="column"></div>
+
+                <div class="column">
+                    <form class="ui fluid form div-add_room">
+                        <div class="two fields">
+                            <div class="field">
+                                <label>新房间号</label>
+                                <input placeholder="" name="room_name" type="text">
+                            </div>
+
+                            <div class="field">
+                                <label>所在楼层</label>
+                                <input placeholder="" name="floor" type="text">
+                            </div>
+                        </div>
+                            <div class="field">
+                                <label>房型名称</label>
+                                <input placeholder="" name="type_name" type="text">
+                            </div>
+
+
+                            <div class="field">
+                                <label>优惠折扣</label>
+                                <input placeholder="" name="discount" type="text">
+                            </div>
+
+
+                        <div class="inline field">
+                            <div class="ui blue submit button">添加</div>
+                        </div>
+
+                    </form>
+                    </div>
+
+                <div class="column"></div>
+            </div>
+
+        </div>
+
+    </div>
+    <div class="actions">
+        <div class="ui cancel button">
+            取消
+        </div>
+    </div>
+</div>
+
+
+ <div class="ui small warn modal">
+    <i class="close icon"></i>
+    <div class="header">
+        确认操作
+    </div>
+    <div class="content">
+      <p>你确定删除吗？</p>
+    </div>
+    <div class="actions">
+      <div class="ui negative button">
+       取消
+      </div>
+      <div class="ui positive right labeled icon button">
+        确认
+        <i class="checkmark icon"></i>
+      </div>
+    </div>
+  </div>

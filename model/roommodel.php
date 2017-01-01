@@ -4,7 +4,9 @@ class RoomModel {
     static public function records($id_card) {
         $db = Database::instance();
         $sql = <<<EOF
-SELECT Typename as room_type_name, Capacity as room_capacity, Ordertime as order_time, Ordertype as cost_type
+SELECT Typename as room_type_name, Capacity as room_capacity, Ordertime as order_time, Ordertype as cost_type, Cost as cost,
+date_format(Maybeintime, '%Y-%m-%d %H:%i') as in_time, date_format(Maybeouttime, '%Y-%m-%d %H:%i') as out_time, Room.Typeno as type_id,
+Room.Roomno as room_name
 FROM Reservation, Room, RoomType
 WHERE Reservation.Roomno = Room.Roomno and Room.Typeno = RoomType.Typeno and LidCard=?
 ORDER BY Ordertime DESC
@@ -22,15 +24,17 @@ EOF;
     /* 当前预定但是没退房的订单 */
     static public function current_records() {
         $db = Database::instance();
-        $st = $db->query_bind('SELECT  '.
-                              'Lodger.LidCard as id_card, Lname as name, Lage as age, Lsex as sex, Lphone as phone, Lscore as score, '.
-                              // "LregistrationTime as register_time ".
-                              'Room.Roomno as room_name, Typename as room_type_name, Capacity as room_capacity, Ordertime as order_time, Ordertype as cost_type, '.
-                              "date_format(Maybeintime, '%Y-%m-%d %H:%i') as in_time, date_format(Maybeouttime, '%Y-%m-%d %H:%i') as out_time, " .
-                              'Cashpledge as cashpledge, (Maybeouttime < now()) as is_timeout '.
-                              'FROM Lodger, Reservation, Room, RoomType '.
-                              'WHERE Reservation.Roomno = Room.Roomno and Room.Typeno = RoomType.Typeno and Lodger.LidCard = Reservation.LidCard ' .
-                              'and Realouttime IS NULL ORDER BY room_name, Maybeintime');
+        $sql = <<<EOF
+SELECT
+Lodger.LidCard as id_card, Lname as name, Lage as age, Lsex as sex, Lphone as phone, Lscore as score, LregistrationTime as register_time,
+Room.Roomno as room_name, Typename as room_type_name, Capacity as room_capacity, Ordertime as order_time, Ordertype as cost_type,
+date_format(Maybeintime, '%Y-%m-%d %H:%i') as in_time, date_format(Maybeouttime, '%Y-%m-%d %H:%i') as out_time, Cost as cost,
+Cashpledge as cashpledge, (Maybeouttime < now()) as is_timeout
+FROM Lodger, Reservation, Room, RoomType
+WHERE Reservation.Roomno = Room.Roomno and Room.Typeno = RoomType.Typeno and Lodger.LidCard = Reservation.LidCard
+and Realouttime IS NULL ORDER BY room_name, Maybeintime
+EOF;
+        $st = $db->query_bind($sql);
         $results = $st->fetchAll();
 
         foreach ($results as &$result) {
@@ -55,13 +59,15 @@ EOF;
     {
         $db = Database::instance();
         $sql = <<<EOF
-(SELECT Typename as type_name, Clockprice as price_per_hour, Dayprice as price_per_day, Area as area, Capacity as person_num, room_count
+(SELECT Typename as type_name, Clockprice as price_per_hour, Dayprice as price_per_day, Area as area, Capacity as person_num, room_count,
+RoomType.Typeno as type_id
 FROM RoomType, (SELECT Typeno, COUNT(*) as room_count FROM Room GROUP BY Typeno) as Tmp
 WHERE RoomType.Typeno = Tmp.Typeno)
 
 UNION
 
-(SELECT Typename as type_name, Clockprice as price_per_hour, Dayprice as price_per_day, Area as area, Capacity as person_num, 0 as room_count
+(SELECT Typename as type_name, Clockprice as price_per_hour, Dayprice as price_per_day, Area as area, Capacity as person_num, 0 as room_count,
+RoomType.Typeno as type_id
 FROM RoomType
 WHERE NOT EXISTS (SELECT * FROM Room WHERE Room.Typeno = RoomType.Typeno))
 
@@ -132,15 +138,16 @@ EOF;
         $out_time = date("Y-m-d H:i:s", $out_time);
 
         $sql = <<<EOF
-        INSERT INTO Reservation(Roomno,LidCard,Ordertime,Maybeintime,Maybeouttime,Realouttime,Ordertype,Cashpledge)
-            VALUES(?, ?, now(), ?, ?, null, ?, ?);
+        INSERT INTO Reservation(Roomno,LidCard,Ordertime,Maybeintime,Maybeouttime,Realouttime,Ordertype,Cashpledge, Cost)
+            VALUES(?, ?, now(), ?, ?, null, ?, ?, ?);
 EOF;
 
         $st = $db->query_bind($sql, array(
             $room_name, $id_card,
             $in_time, $out_time,
             ($type == 'clock' ? 0 : 1),
-            self::cal_cashpledge($price)
+            self::cal_cashpledge($price),
+            $price
         ));
 
         return $st->rowCount() > 0;
@@ -152,11 +159,15 @@ EOF;
         $db = Database::instance();
         $sql = <<<EOF
 SELECT * FROM Reservation
-WHERE Roomno=? and Ordertype=? and Maybeintime >= ? and Maybeouttime <= ? and Realouttime is null
+WHERE Roomno=:room_no and Ordertype=:type and Realouttime is null and
+(not (:in_time > Maybeouttime or :out_time < Maybeintime))
 EOF;
 
         $st = $db->query_bind($sql, array(
-            $room_name, ($type == 'clock' ? 0 : 1), date("Y-m-d H:i:s", $in_time), date("Y-m-d H:i:s", $out_time)));
+            ':room_no' => $room_name,
+            ':type' => ($type == 'clock' ? 0 : 1),
+            ':in_time' => date("Y-m-d H:i:s", $in_time),
+            ':out_time' => date("Y-m-d H:i:s", $out_time)));
 
         return count($st->fetchAll()) > 0;
     }
@@ -206,5 +217,42 @@ EOF;
     static public function cal_cashpledge($price)
     {
         return $price < 50 ? 50 : $price;
+    }
+
+
+    static public function add_room_type($type_name, $area, $person_num, $price_per_day, $price_per_hour) {
+        $db = Database::instance();
+        $st = $db->query_bind('INSERT INTO RoomType(Typename,Clockprice,Dayprice,Area,Capacity) VALUES(?, ?, ?, ?, ?)',
+                              array($type_name, $price_per_hour, $price_per_day, $area, $person_num));
+        return $st->rowCount() > 0;
+    }
+
+    static public function del_room_type($type_id) {
+        $db = Database::instance();
+        $st = $db->query_bind('DELETE FROM RoomType WHERE Typeno=?', array($type_id));
+        return $st->rowCount() > 0;
+    }
+
+
+    static public function add_room($room_name, $type_name, $floor, $discount) {
+        $db = Database::instance();
+
+        $st = $db->query_bind('SELECT Typeno as type_id FROM RoomType WHERE Typename=?', array($type_name));
+        $res = $st->fetchAll();
+        if (!$res) {
+            return false;
+        }
+        $type_id = $res[0]['type_id'];
+
+
+        $st = $db->query_bind('INSERT INTO Room(Roomno,Typeno,Roomfloor,Pricepercent)  VALUES(?, ?, ?, ?)',
+                              array($room_name, $type_id, $floor, $discount));
+        return $st->rowCount() > 0;
+    }
+
+    static public function del_room($room_name) {
+        $db = Database::instance();
+        $st = $db->query_bind('DELETE FROM Room WHERE Roomno=?', array($room_name));
+        return $st->rowCount() > 0;
     }
 }

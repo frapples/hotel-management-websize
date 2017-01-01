@@ -66,6 +66,7 @@ CREATE TABLE Reservation													/*预约信息表*/
 	Maybeouttime DATETIME not null,											/*预计退房时间*/
 	Realouttime DATETIME,														/*实际退房时间*/
 	Ordertype tinyint check(Ordertype in (0,1)),												/*预定房间类型*/
+  Cost float not null, /* 费用 */
 	Cashpledge float  default 0 check(Cashpledge>=0),				/*已交押金*/
 	PRIMARY KEY(Roomno,LidCard,Ordertime),
 	FOREIGN KEY(Roomno)REFERENCES Room(Roomno),

@@ -120,6 +120,7 @@
                              var warn_title;
                              var warn_content;
                              if (response.reason == 'permission') {
+
                                  location.href = "<?= Path::url(array(), 'user_login') ?>";
                                  return;
 
@@ -162,7 +163,16 @@
                              data: data,
                              success: function(response) {
                                  if (response.success) {
-                                     location.href = "<?= Path::url(array(), 'user_space') ?>";
+
+                                     $('.ui.modal.div-success-location').modal({
+                                         closable: false,
+                                     }
+                                     ).modal("show");
+
+                                     setTimeout(function () {
+                                         location.href = "<?= Path::url(array(), 'user_space') ?>";
+                                     }, 2000);
+
                                  } else {
                                      modal_warn("预定失败", "抱歉，预定遇到了问题，请您重新再试。");
                                  }
@@ -503,5 +513,33 @@
             </div>
         </div>
 
+
+
+        <div class="ui div-success-location modal">
+            <i class="close icon"></i>
+            <div class="header">
+                温馨提示
+            </div>
+            <div class="content">
+
+                <div class="ui positive message">
+                    <div class="header">
+                        预定成功！
+                    </div>
+                    <p>
+                        恭喜，预定成功！房间在整个时间段会为您保留，请您及时入住。
+                    </p>
+                    <p>
+                        即将跳转到用户空间，正在跳转。。。
+                    </p>
+                </div>
+
+            </div>
+            <div class="actions">
+                <div class="ui button">
+                    立即跳转
+                </div>
+            </div>
+        </div>
     </body>
 </html>

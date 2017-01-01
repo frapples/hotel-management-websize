@@ -118,25 +118,36 @@
 
                     <h3 class="ui top attached header">
                         <i class ="calendar icon"> </i>
-                        最近预约
+                        最近预定
                     </h3>
                     <div class="ui attached segment">
 
                         <div class="ui relaxed divided items">
+                            <!-- <div class="ui animated list"> -->
 
                             <?php foreach(array_slice(Tpl::api('order_records'), 0, 3) as $record): ?>
                             <div class="item">
                                 <div class="ui small image">
-                                    <img src="<?= Tpl::asset('room/1.png') ?>">
+                                    <img src="<?= Tpl::asset('room/' . $record['type_id'] .'.png') ?>">
                                 </div>
                                 <div class="content">
-                                    <a class="header"> <?= $record['room_type_name'] . ' - ' . $record['cost_type'] ?> </a>
+                                    <a class="header"> <?= $record['room_type_name']?> - <?= $record['room_name'] ?>房 </a>
+                                    <div class="meta">
+                                        <span class="price"> 预定时间：<?= $record['order_time'] ?> </span>
+                                        <!-- <span class="stay">1 个月</span> -->
+                                    </div>
                                     <div class="description">
-                                        预定时间：<?= $record['order_time'] ?>
+                                            <i class="wait icon"></i>
+                                           入住: <?= $record['in_time'] ?>
+                                            <br/>
+                                            <i class="wait icon"></i>
+                                            退房: <?= $record['out_time'] ?>
                                     </div>
                                     <div class="extra">
+                                        <a class="ui green mini tag label"><?= $record['cost_type'] ?></a>
+
                                         <i class ="circular inverted teal small Yen icon"></i>
-                                        11
+                                        <?= $record['cost'] ?>元
                                     </div>
                                 </div>
                             </div>
@@ -201,18 +212,30 @@
                             <?php foreach(Tpl::api('order_records') as $record): ?>
                             <div class="item">
                                 <div class="ui small image">
-                                    <img src="<?= Tpl::asset('room/1.png') ?>">
+                                    <img src="<?= Tpl::asset('room/' . $record['type_id'] .'.png') ?>">
                                 </div>
+
                                 <div class="content">
-                                    <a class="header"> <?= $record['room_type_name'] . ' - ' . $record['cost_type'] ?> </a>
+                                    <a class="header"> <?= $record['room_type_name']?> - <?= $record['room_name'] ?>房 </a>
+                                    <div class="meta">
+                                        <span class="price"> 预定时间：<?= $record['order_time'] ?> </span>
+                                        <!-- <span class="stay">1 个月</span> -->
+                                    </div>
                                     <div class="description">
-                                        预定时间：<?= $record['order_time'] ?>
+                                        <i class="wait icon"></i>
+                                        入住: <?= $record['in_time'] ?>
+                                        <br/>
+                                        <i class="wait icon"></i>
+                                        退房: <?= $record['out_time'] ?>
                                     </div>
                                     <div class="extra">
+                                        <a class="ui green tiny tag label"><?= $record['cost_type'] ?></a>
                                         <i class ="circular inverted teal small Yen icon"></i>
-                                        11
+                                        <?= $record['cost'] ?>元
                                     </div>
                                 </div>
+
+
                             </div>
                             <?php endforeach; ?>
 

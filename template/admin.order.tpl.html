@@ -14,10 +14,11 @@
       <th>房间</th>
       <th>住客</th>
       <th>预约类型</th>
-      <th>预约时间</th>
       <th>入住区间</th>
+      <th>花费</th>
       <th>已付押金</th>
       <th>联系方式</th>
+      <th>预约时间</th>
       <th>操作</th>
     </tr>
   </thead>
@@ -27,12 +28,11 @@
         <td> <?=$record['room_name'] ?> (<?= $record['room_type_name'] ?>)</td>
       <td><?= $record['name'] . ($record['sex'] == '男' ? '先生' : '女士') ?></td>
       <td><?= $record['cost_type'] ?></td>
-      <td><?= $record['order_time'] ?></td>
-
       <td><?= $record['in_time'] ?> 到 <?= $record['out_time'] ?> </td>
+      <td><?= $record['cost'] ?>元</td>
       <td><?= $record['cashpledge'] > 0 ? $record['cashpledge'] . '元' : '未支付' ?></td>
-
       <td><?= $record['phone'] ?></td>
+      <td><?= $record['order_time'] ?></td>
 
       <td>
         <div class="ui buttons">
@@ -41,8 +41,8 @@
              data-room_name="<?= $record['room_name'] ?>"
                  data-order_time="<?= $record['order_time'] ?>"
             >退房</div>
-            <div class="or" data-text="O"></div>
-            <div class="ui positive button">交押金</div>
+            <!-- <div class="or" data-text="O"></div> -->
+            <!-- <div class="ui positive button">交押金</div> -->
         </div>
 
       </td>
