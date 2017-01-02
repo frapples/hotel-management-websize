@@ -24,6 +24,6 @@ class Session {
 
     static public function clear()
     {
-        session_destroy();
+        $_SESSION = array();
     }
 }

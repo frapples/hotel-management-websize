@@ -132,6 +132,7 @@ class ApiController {
         $employee_id =  EmployeeModel::check($_POST['username'], $_POST['password']);
 
         if ($id_card != false) {
+            Session::clear();
             Session::set('is_login', true);
             Session::set('username', $_POST['username']);
             Session::set('id_card', $id_card);
@@ -142,6 +143,7 @@ class ApiController {
             );
 
         } else if ($employee_id != false) {
+            Session::clear();
             Session::set('is_admin', true);
             Session::set('username', $_POST['username']);
             Session::set('employee_id', $employee_id);
@@ -182,6 +184,7 @@ class ApiController {
 
 
         if ($success) {
+            Session::clear();
             Session::set('is_login', true);
             Session::set('username', $_POST['username']);
             Session::set('id_card', $_POST['id_card']);

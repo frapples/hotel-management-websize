@@ -203,16 +203,16 @@
                     </div>
                 </div>
                 <?php if (Tpl::api('is_login')): ?>
-
-                <?php if (!Tpl::api('is_admin')): ?>
                 <a href = "<?= Path::url(array(), 'user_space') ?>" class="ui item button">
                     我的空间
                 </a>
-                <?php else: ?>
+                <a class="ui item button div-logoff">
+                    退出网站
+                </a>
+                <?php elseif (Tpl::api('is_admin')): ?>
                 <a href = "<?= Path::url(array(), 'admin') ?>" class="ui item button">
                     管理网站
                 </a>
-                <?php endif; ?>
                 <a class="ui item button div-logoff">
                     退出网站
                 </a>
