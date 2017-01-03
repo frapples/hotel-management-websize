@@ -84,7 +84,7 @@ EOF;
         $sql = <<<EOF
 (SELECT Room.Roomno as room_name, Typename as type_name, Roomfloor as floor, ROUND(Pricepercent * 10, 1) as discount, order_count, RoomType.Typeno as type_id,
 Capacity as person_num, Clockprice as price_per_hour, Dayprice as price_per_day, Area as area,
-Dayprice * Pricepercent as real_price_per_day, Clockprice * Pricepercent as real_price_per_hour
+ROUND(Dayprice * Pricepercent, 1) as real_price_per_day, ROUND(Clockprice * Pricepercent, 1) as real_price_per_hour
 FROM Room, RoomType, (SELECT Roomno, COUNT(*) as order_count  FROM Reservation WHERE Realouttime is null GROUP BY Roomno) as Tmp
 WHERE RoomType.Typeno = Room.Typeno and Room.Roomno = Tmp.Roomno)
 

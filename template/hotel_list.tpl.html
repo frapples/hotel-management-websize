@@ -171,7 +171,7 @@
 
                                      setTimeout(function () {
                                          location.href = "<?= Path::url(array(), 'user_space') ?>";
-                                     }, 2000);
+                                     }, 3000);
 
                                  } else {
                                      modal_warn("预定失败", "抱歉，预定遇到了问题，请您重新再试。");
@@ -297,7 +297,7 @@
                                 <img src="<?= Tpl::asset('room/' . $room['type_id'] . '.png') ?>">
                             </div>
                             <div class="content">
-                                <a class="header"><?= $room['type_name'] ?></a>
+                                <a class="header"><?= $room['type_name'] ?> - <?= $room['room_name'] ?>房</a>
                                 <div class="meta">
                                     <span class="cinema">可住<?= $room['person_num'] ?>人，<?=$room['area'] ?>平米</span>
                                 </div>
@@ -406,7 +406,7 @@
                                 <img src="<?= Tpl::asset('room/' . $room['type_id'] . '.png') ?>">
                             </div>
                             <div class="content">
-                                <a class="header"><?= $room['type_name'] ?></a>
+                                <a class="header"><?= $room['type_name'] ?> - <?= $room['room_name'] ?>房</a>
                                 <div class="meta">
                                     <span class="cinema">可住<?= $room['person_num'] ?>人，<?=$room['area'] ?>平米</span>
                                 </div>
