@@ -72,3 +72,59 @@ CREATE TABLE Reservation													/*预约信息表*/
 	FOREIGN KEY(Roomno)REFERENCES Room(Roomno),
 	FOREIGN KEY(LidCard)REFERENCES Lodger(LidCard)
 );
+
+CREATE TABLE RoomAllReservationCount(
+  Roomno char(5),
+  AllCount int not null default 0,
+	FOREIGN KEY(Roomno)REFERENCES Room(Roomno)
+);
+
+/* 当前服务订单 */
+CREATE VIEW CurrentReservation AS
+SELECT Roomno, LidCard, Ordertime, Maybeintime, Maybeouttime, Ordertype, Cost, Cashpledge
+FROM Reservation
+WHERE Realouttime is null;
+
+/* 历史订单记录 */
+CREATE VIEW HistoryReservation AS
+SELECT Roomno, LidCard, Ordertime, Maybeintime, Maybeouttime, Realouttime, Ordertype, Cost
+FROM Reservation
+WHERE Realouttime is not null;
+
+
+
+
+/* 每个房间的当前服务订单统计 */
+CREATE VIEW RoomReservationCount AS
+(SELECT Room.Roomno, COUNT(CurrentReservation.Roomno) as CurrentCount
+FROM Room LEFT JOIN CurrentReservation ON Room.Roomno = CurrentReservation.Roomno
+GROUP BY Roomno);
+
+
+/*每种房型的房间数统计 */
+CREATE VIEW RoomTypeCount AS
+(SELECT RoomType.Typeno, COUNT(Room.Typeno) as Count
+FROM RoomType LEFT JOIN Room ON RoomType.Typeno = Room.Typeno
+GROUP BY Typeno);
+
+
+CREATE TRIGGER ReservationTrigger
+AFTER  INSERT
+ON Reservation
+FOR EACH ROW
+    UPDATE RoomAllReservationCount
+    SET AllCount = AllCount + 1
+    WHERE Roomno = NEW.Roomno;
+
+CREATE TRIGGER RoomTriggerInsert
+AFTER  INSERT
+ON Room
+FOR EACH ROW
+INSERT INTO RoomAllReservationCount(Roomno) VALUES (NEW.Roomno);
+
+
+CREATE TRIGGER RoomTriggerDelete
+AFTER  DELETE
+ON Room
+FOR EACH ROW
+DELETE FROM RoomAllReservationCount WHERE RoomAllReservationCount.Roomno = OLD.Roomno;

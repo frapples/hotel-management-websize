@@ -9,6 +9,9 @@ class Controller {
             return;
         }
 
+        if ($con_name == "index") {
+            $con_name = "hotel_list";
+        }
         if (!method_exists('Controller', $con_name)) {
             echo "404错误:" . $con_name;
             return;
